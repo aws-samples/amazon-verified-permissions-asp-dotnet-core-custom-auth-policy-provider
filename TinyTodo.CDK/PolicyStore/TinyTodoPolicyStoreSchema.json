@@ -1,0 +1,105 @@
+{
+    "TinyTodoList": {
+        "actions": {
+            "UserAdmin": {
+                "appliesTo": {
+                    "context": {
+                        "type": "Record",
+                        "attributes": {}
+                    },
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "User"
+                    ]
+                }
+            },
+            "DeleteTodoList": {
+                "appliesTo": {
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "TodoList"
+                    ]
+                }
+            },
+            "ShareTodoList": {
+                "appliesTo": {
+                    "resourceTypes": [
+                        "TodoList"
+                    ],
+                    "principalTypes": [
+                        "User"
+                    ]
+                }
+            },
+            "CreateTodoList": {
+                "appliesTo": {
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "TodoList"
+                    ]
+                }
+            },
+            "AddTodoItem": {
+                "appliesTo": {
+                    "context": {
+                        "type": "Record",
+                        "attributes": {}
+                    },
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "TodoList"
+                    ]
+                }
+            }
+        },
+        "entityTypes": {
+            "User": {
+                "memberOfTypes": [],
+                "shape": {
+                    "attributes": {
+                        "Role": {
+                            "type": "String",
+                            "required": true
+                        },
+                        "Email": {
+                            "required": true,
+                            "type": "String"
+                        },
+                        "Id": {
+                            "required": true,
+                            "type": "String"
+                        }
+                    },
+                    "type": "Record"
+                }
+            },
+            "TodoList": {
+                "shape": {
+                    "attributes": {
+                        "Id": {
+                            "required": true,
+                            "type": "String"
+                        },
+                        "Owner": {
+                            "required": true,
+                            "type": "String"
+                        },
+                        "Title": {
+                            "required": true,
+                            "type": "String"
+                        }
+                    },
+                    "type": "Record"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,166 @@
+@using TinyTodo.Web.Database.Models
+
+@model List<TodoList>
+
+@{
+    ViewData["Title"] = "Todo List";
+}
+
+<div class="container">
+    <div class="row" style="text-align: right;">
+        <div class="col-md-12" style="float: right">
+            <button type="button" class="btn btn-primary btn-show-add-list-modal" data-bs-toggle="modal" data-bs-target="#divEditTodoList">Add To-Do List</button>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var todoList in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                <div class="card-img-top" style="height: 190px; width: 100%; display: block;">
+                    <h4>@(todoList.Owner == User.Identity?.Name ? todoList.Title : todoList.Title + " (Shared)" )</h4>
+                    <ul>
+                      @foreach (var item in todoList.TodoItems)
+                      {
+                        <li>@item.Title</li>  
+                      }
+                    </ul>
+                    @if(todoList.Owner == User.Identity?.Name && todoList.Shares.Any())
+                    {
+                        <p class="sharelist">
+                            <b>Shared with: </b>
+                            <span>@string.Join(',', todoList.Shares.Select(x => x.Email))</span>
+                        </p>
+                    }                    
+                </div>
+                <div class="card-body">
+                    <p class="card-text"></p>
+                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-show-additem-modal" data-bs-toggle="modal" 
+                            data-bs-target="#divAddTodoItem" data-todo-list-id="@todoList.Id">Add Item</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-show-share-list-modal" data-bs-toggle="modal"
+                            data-bs-target="#divShareTodoList" data-todo-list-id="@todoList.Id">Share</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-delete-list"
+                            data-todo-list-id="@todoList.Id">Delete</button>
+                        @if(todoList.Owner == User.Identity?.Name && todoList.Shares.Any())
+                        {
+                            <button type="button" class="btn btn-sm btn-outline-secondary btn-mark-list-private"
+                            data-todo-list-id="@todoList.Id">Mark as Private</button>
+                        }
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@Html.Partial("_EditTodoList")
+
+@Html.Partial("_AddTodoItem")
+
+@Html.Partial("_ShareTodoList")
+
+@section Scripts{
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#btnCreateTodoList').click(function(event){
+            let form = $('#frmNewToDoList');
+            let msg = form.find('.alert');
+            jQuery.post('/TodoList/Create', form.serialize(), function(result){
+                msg.removeClass('alert-success');
+                msg.removeClass('alert-danger');
+                if(result.success){
+                    msg.addClass('alert-success');
+                }else{
+                    msg.addClass('alert-danger');
+                }
+                msg.html(result.message);
+            });
+        });
+
+        $('#btnShareTodoList').click(function(event){
+            let form = $('#frmShareTodoList');
+            let msg = form.find('.alert');
+            let data = form.serialize() + '&todolistid=' + $(this).data('todo-list-id');
+            jQuery.post('/TodoList/Share', data, function(result){
+                msg.removeClass('alert-success');
+                msg.removeClass('alert-danger');
+                if(result.success){
+                    msg.addClass('alert-success');
+                }else{
+                    msg.addClass('alert-danger');
+                }
+                msg.html(result.message);
+            });
+        });
+
+        $('.btn-mark-list-private').click(function(event){
+            if(confirm('Are you sure you want to mark this todo list as private?')){
+                let data = 'todoListId='+$(this).data('todo-list-id');
+                jQuery.post('/TodoList/MakePrivate', data, function(result){
+                    if(result.success){
+                        alert(result.message);
+                        location.reload();
+                    }else{
+                        alert(result.message);
+                    }
+                    msg.html(result.message);
+                });
+            }
+        });
+
+        $('#btnCreateTodoItem').click(function(){
+            let form = $('#frmNewToDoItem');
+            let msg = form.find('.alert');
+            let data = form.serialize() + '&todolistid=' + $(this).data('todo-list-id');
+            jQuery.post('/TodoList/AddTodoItem', data, function(result){
+                msg.removeClass('alert-success');
+                msg.removeClass('alert-danger');
+                if(result.success){
+                    msg.addClass('alert-success');
+                }else{
+                    msg.addClass('alert-danger');
+                }
+                msg.html(result.message);
+            });
+        });
+
+        $('.btn-delete-list').click(function(){
+          if(confirm('Are you sure you want to delete the todo list?')){
+            let data = 'id='+$(this).data('todo-list-id');
+            jQuery.post('/TodoList/Delete', data, function(result){
+                if(result.success){
+                    alert('Todo list deleted.');
+                    location.reload();
+                }else{
+                    alert(result.message);
+                }
+            });
+          }
+        });
+
+        $('.btn-show-add-list-modal').click(function(){
+          $('#frmNewToDoList').find('.alert').html('');
+        });
+
+        $('.btn-show-additem-modal').click(function(){
+          $('#btnCreateTodoItem').data('todo-list-id', $(this).data('todo-list-id'));
+          $('#frmNewToDoItem').find('.alert').html('');
+        });
+
+        $('.btn-show-share-list-modal').click(function(){
+          $('#btnShareTodoList').data('todo-list-id', $(this).data('todo-list-id'));
+          $('#frmShareTodoList').find('.alert').html('');
+        });
+
+        $('#divEditTodoList,#divAddTodoItem,#divShareTodoList').on('hidden.bs.modal', function (e) {
+            document.location.reload();
+        })       
+    });
+
+</script>
+}
+

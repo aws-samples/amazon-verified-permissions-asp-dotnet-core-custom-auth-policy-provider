@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Amazon.CDK.Lib" Version="2.89.0" />
+    <PackageReference Include="AWSSDK.VerifiedPermissions" Version="3.7.200.8" />
+    <PackageReference Include="Constructs" Version="10.2.69" />
+  </ItemGroup>
+</Project>
