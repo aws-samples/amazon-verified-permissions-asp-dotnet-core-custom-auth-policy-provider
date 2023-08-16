@@ -2,7 +2,7 @@
 
 This is a sample asp.net core application with a custom authorization policy provider which makes use of Amazon Verified Permissions API to evaluate authorization requirements and obtain authorization result. 
 
-Blog reference: [Implement custom authorization policy provider for ASP.NET Core apps using Amazon Verified Permissions](#)
+Blog reference: [Implement custom authorization policy provider for ASP.NET Core apps using Amazon Verified Permissions](https://aws.amazon.com/blogs/dotnet/implement-a-custom-authorization-policy-provider-for-asp-net-core-apps-using-amazon-verified-permissions)
 
 ### The Architecture
 
