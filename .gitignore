@@ -21,4 +21,5 @@
 Thumbs.db
 
 # Misc
+*.bak
 /*/*.bak
