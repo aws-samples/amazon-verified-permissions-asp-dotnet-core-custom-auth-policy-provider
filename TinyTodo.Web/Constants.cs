@@ -1,6 +1,6 @@
 public static class Constants 
 {
-    public const string AdminUserEmail = "admin@demo.com";
+    public const string AdminUserEmail = "admin@example.com";
 
     public static class Roles
     {

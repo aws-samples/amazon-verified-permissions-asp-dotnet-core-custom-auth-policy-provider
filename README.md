@@ -54,9 +54,9 @@ Run [TinyTodo.Web](/TinyTodo.Web/) project
 ### Resource based authorization
 
 #### Create and share a sample todo list
-* Login as user1@demo.com (with any password), go to 'My Todo Lists' page.
+* Login as user1@example.com (with any password), go to 'My Todo Lists' page.
 * Create a to-do list
-* Share it with user2@demo.com (Leave 'Allow Reshare' option unchecked)
+* Share it with user2@example.com (Leave 'Allow Reshare' option unchecked)
 * Log out
 
 #### Check the template-linked policy created
@@ -65,22 +65,22 @@ Run [TinyTodo.Web](/TinyTodo.Web/) project
 * You can see that a new template-linked policy is created (linked to the policy template [TodoListSharedAccessPolicyTemplate](/TinyTodo.CDK/PolicyStore/PolicyTemplates/TodoListSharedAccessPolicyTemplate.cs))
 
 #### Verify the user permissions on the shared to-do list
-* Login as user2@demo.com (with any password), go to 'My Todo Lists' page.
-* You can see the to-do list shared by user1@demo.com
-* Try resharing the to-do list with another user (user3@demo.com), you should see an error message as the above mentioned template-linked policy grants permissions only to add items to the todo list.
+* Login as user2@example.com (with any password), go to 'My Todo Lists' page.
+* You can see the to-do list shared by user1@example.com
+* Try resharing the to-do list with another user (user3@example.com), you should see an error message as the above mentioned template-linked policy grants permissions only to add items to the todo list.
 
 ### Attribute-based authorization
 
-* Login as user2@demo.com (with any password), go to 'My Todo Lists' page.
-* You can see the to-do list shared by user1@demo.com
-* Try deleting the to-do list or sharing with anothe user (user3@demo.com), you should see an error message (as limited by the policy [AllowActionsOnUserTodoListsPolicy](/TinyTodo.CDK/PolicyStore/StaticPolicies/AllowActionsOnUserTodoListsPolicy.cs))
+* Login as user2@example.com (with any password), go to 'My Todo Lists' page.
+* You can see the to-do list shared by user1@example.com
+* Try deleting the to-do list or sharing with anothe user (user3@example.com), you should see an error message (as limited by the policy [AllowActionsOnUserTodoListsPolicy](/TinyTodo.CDK/PolicyStore/StaticPolicies/AllowActionsOnUserTodoListsPolicy.cs))
 
 ### Role-based authorization
 
-* Login as user1@demo.com (with any password), try visiting 'Admin' page.
+* Login as user1@example.com (with any password), try visiting 'Admin' page.
 * You should see an error page (as limited by the policy [AdminModuleAccessPolicy](/TinyTodo.CDK/PolicyStore/StaticPolicies/AdminModuleAccessPolicy.cs))
 * Logout
-* Login as admin@demo.com (with any password), try visiting 'Admin' page.
+* Login as admin@example.com (with any password), try visiting 'Admin' page.
 * You should see the admin page without any errors
 
 ## Reset the sample application
