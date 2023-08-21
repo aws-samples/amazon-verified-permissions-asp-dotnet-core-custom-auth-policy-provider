@@ -57,7 +57,7 @@ public class TodoListController : Controller
         {
             if(db.TodoLists.Any(x => x.Title == todoList.Title))
             {
-                return new JsonResult(new { success = false, message = "Todo list already exists" });
+                return new JsonResult(new { success = false, message = "To-do list already exists" });
             }
             todoList.Owner = User.Identity.Name;
             todoList.Created = DateTime.Now;
@@ -65,7 +65,7 @@ public class TodoListController : Controller
             db.TodoLists.Add(todoList);
             db.SaveChanges();
         }
-        return new JsonResult(new { success = true, message = "Todo list created" });
+        return new JsonResult(new { success = true, message = "To-do list created" });
     }
 
     [HttpPost]
@@ -77,7 +77,7 @@ public class TodoListController : Controller
 
             if(todoList == null)
             {
-                return new JsonResult(new { success = false, message = "Invalid todo list" });
+                return new JsonResult(new { success = false, message = "Invalid to-do list" });
             }
 
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, todoList, 
@@ -85,19 +85,19 @@ public class TodoListController : Controller
 
             if(!authorizationResult.Succeeded)
             {
-                return new JsonResult(new { success = false, message = "You don't have permissions to add items to this todo list." });
+                return new JsonResult(new { success = false, message = "You don't have permissions to add items to this to-do list." });
             }
 
             if(db.TodoItems.Any(x => x.TodoListId == todoItem.TodoListId 
                                             && x.Title == todoItem.Title))
             {
-                return new JsonResult(new { success = false, message = "Todo item already exists" });
+                return new JsonResult(new { success = false, message = "To-do item already exists" });
             }
             todoItem.Created = DateTime.Now;
             db.TodoItems.Add(todoItem);
             db.SaveChanges();
         }
-        return new JsonResult(new { success = true, message = "Todo item created" });
+        return new JsonResult(new { success = true, message = "To-do item created" });
     }
 
     [HttpPost]
@@ -109,7 +109,7 @@ public class TodoListController : Controller
 
             if(todoList == null)
             {
-                return new JsonResult(new { success = false, message = "Invalid todo list" });
+                return new JsonResult(new { success = false, message = "Invalid to-do list" });
             }
 
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, todoList, 
@@ -117,12 +117,12 @@ public class TodoListController : Controller
 
             if(!authorizationResult.Succeeded)
             {
-                return new JsonResult(new { success = false, message = "You don't have permissions to share the todo list." });
+                return new JsonResult(new { success = false, message = "You don't have permissions to share the to-do list." });
             }
             
             if(db.TodoListShares.Any(x => x.Email == todoListShare.Email && x.TodoListId == todoListShare.TodoListId))
             {
-                return new JsonResult(new { success = false, message = "Todo list already shared with this email" });
+                return new JsonResult(new { success = false, message = "To-do list already shared with this email" });
             }
 
             todoListShare.Created = DateTime.Now;
@@ -136,11 +136,11 @@ public class TodoListController : Controller
                                         : _appConfig.TodoListSharedAccessPolicyTemplateId;
         
         await _verifiedPermissionsUtil.CreateSharePolicyAsync(policyTemplateId, 
-            new EntityIdentifier { EntityId = todoListShare.Email,  EntityType = $"{_appConfig.PolicyStoreNamespace}::User" },
-            new EntityIdentifier { EntityId = $"{todoListShare.TodoListId}",  EntityType = $"{_appConfig.PolicyStoreNamespace}::{typeof(TodoList).Name}"}
+            new EntityIdentifier { EntityId = todoListShare.Email,  EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::User" },
+            new EntityIdentifier { EntityId = $"{todoListShare.TodoListId}",  EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::{typeof(TodoList).Name}"}
         );
 
-        return new JsonResult(new { success = true, message = "Todo list shared with this email" });
+        return new JsonResult(new { success = true, message = "To-do list shared with this email" });
     }    
 
     [HttpPost]
@@ -148,23 +148,28 @@ public class TodoListController : Controller
     {
         using (var db = new TinyTodoDBContext(_appConfig))
         {
-            todoList = await db.TodoLists.FirstOrDefaultAsync(x => x.Id == todoList.Id);
+            todoList = await db.TodoLists
+                            .Include(t => t.TodoItems)
+                            .Include(t => t.Shares)
+                            .FirstOrDefaultAsync(x => x.Id == todoList.Id);
+                            
             if(todoList == null)
             {
-                return new JsonResult(new { success = false, message = "Invalid todo list" });
+                return new JsonResult(new { success = false, message = "Invalid to-do list" });
             }
 
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, todoList, 
                                         Constants.ResourcePolicies.DeleteTodoList);
             if(!authorizationResult.Succeeded)
             {
-                return new JsonResult(new { success = false, message = "You don't have permissions to delete the todo list." });
+                return new JsonResult(new { success = false, message = "You don't have permissions to delete the to-do list." });
+            
             }
 
             db.TodoLists.Remove(todoList);
             db.SaveChanges();
         }
-        return new JsonResult(new { success = true, message = "Todo list deleted" });
+        return new JsonResult(new { success = true, message = "To-do list deleted" });
     }
 
     [HttpPost]
@@ -175,7 +180,7 @@ public class TodoListController : Controller
             var shares = db.TodoListShares.Where(x => x.TodoListId == todoListShare.TodoListId);
             if(!shares.Any())
             {
-                return new JsonResult(new { success = false, message = "Invalid todo list or email" });
+                return new JsonResult(new { success = false, message = "Invalid to-do list or email" });
             }
 
             db.TodoListShares.RemoveRange(shares);
@@ -184,15 +189,15 @@ public class TodoListController : Controller
         
         await _verifiedPermissionsUtil.DeleteSharePoliciesAsync(_appConfig.TodoListSharedAccessPolicyTemplateId, 
             new EntityIdentifier { EntityId = $"{todoListShare.TodoListId}",  
-                EntityType = $"{_appConfig.PolicyStoreNamespace}::{typeof(TodoList).Name}"}
+                EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::{typeof(TodoList).Name}"}
         );
 
         await _verifiedPermissionsUtil.DeleteSharePoliciesAsync(_appConfig.TodoListSharedAccessWithResharePolicyTemplateId, 
             new EntityIdentifier { EntityId = $"{todoListShare.TodoListId}",  
-                EntityType = $"{_appConfig.PolicyStoreNamespace}::{typeof(TodoList).Name}"}
+                EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::{typeof(TodoList).Name}"}
         );
 
-        return new JsonResult(new { success = true, message = "Todo list is marked as private." });
+        return new JsonResult(new { success = true, message = "To-do list is marked as private." });
     }       
 }
 

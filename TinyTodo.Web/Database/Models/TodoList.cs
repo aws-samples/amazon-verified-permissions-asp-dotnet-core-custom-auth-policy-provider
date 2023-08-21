@@ -1,11 +1,15 @@
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace TinyTodo.Web.Database.Models;
 
 public class TodoList : IEntity
 {
-    public int Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
     public string Title { get; set; } = "";
     public string Owner { get; set; } = "";
     public DateTime Created { get; set; }

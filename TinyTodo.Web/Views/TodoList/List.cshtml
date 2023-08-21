@@ -129,11 +129,11 @@
         });
 
         $('.btn-delete-list').click(function(){
-          if(confirm('Are you sure you want to delete the todo list?')){
+          if(confirm('Are you sure you want to delete the to-do list?')){
             let data = 'id='+$(this).data('todo-list-id');
             jQuery.post('/TodoList/Delete', data, function(result){
                 if(result.success){
-                    alert('Todo list deleted.');
+                    alert('To-do list deleted.');
                     location.reload();
                 }else{
                     alert(result.message);
