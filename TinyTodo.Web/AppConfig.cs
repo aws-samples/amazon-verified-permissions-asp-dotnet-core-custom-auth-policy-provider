@@ -19,11 +19,11 @@ public class AppConfig : IAppConfig
         }
     }
 
-    public string PolicyStoreNamespace
+    public string PolicyStoreSchemaNamespace
     {
         get
         {
-            return VerifiedPermissions.GetValue<string>(nameof(PolicyStoreNamespace));
+            return VerifiedPermissions.GetValue<string>(nameof(PolicyStoreSchemaNamespace));
         }
     }
 
@@ -52,7 +52,7 @@ public class AppConfig : IAppConfig
     {
         get
         {
-            return $"{PolicyStoreNamespace}::Action";
+            return $"{PolicyStoreSchemaNamespace}::Action";
         }
     }
 }

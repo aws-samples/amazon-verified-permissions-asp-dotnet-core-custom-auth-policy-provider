@@ -23,7 +23,7 @@ public class VerifiedPermissionsUtil : IVerifiedPermissionsUtil
         {
             Identifier = new EntityIdentifier
             {
-                EntityType = $"{_appConfig.PolicyStoreNamespace}::User",
+                EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::User",
                 EntityId = user?.Identity?.Name
             },
             Attributes = new Dictionary<string, AttributeValue>
@@ -45,7 +45,7 @@ public class VerifiedPermissionsUtil : IVerifiedPermissionsUtil
         {
             Identifier = new EntityIdentifier
             {
-                EntityType = $"{_appConfig.PolicyStoreNamespace}::{resource.GetType().Name}",
+                EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::{resource.GetType().Name}",
                 EntityId = $"{resource.Id}"
             },
             Attributes = ToDictionary(resource)
