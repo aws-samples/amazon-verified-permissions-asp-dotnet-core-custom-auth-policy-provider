@@ -44,11 +44,11 @@ public class TinyTodoCdkStack : Stack
                 = new CfnPolicyTemplate(this, nameof(TodoListSharedAccessWithResharePolicyTemplate), 
                         new TodoListSharedAccessWithResharePolicyTemplate(policyStoreId));
 
-        new CfnOutput(this, "PolicyStoreId", new CfnOutputProps {Value = "XXXXXXXXXXXXX"});
+        new CfnOutput(this, "PolicyStoreId", new CfnOutputProps {Value = policyStoreId});
         new CfnOutput(this, "PolicyStoreSchemaNamespace", new CfnOutputProps {Value = "TinyTodoList"});
         new CfnOutput(this, "TodoListSharedAccessPolicyTemplateId", 
-                new CfnOutputProps {Value = "XXXXXXXXXXXXX"});
+                new CfnOutputProps {Value = sharedAccessPolicyTemplate.AttrPolicyTemplateId});
         new CfnOutput(this, "TodoListSharedAccessWithResharePolicyTemplateId", 
-                new CfnOutputProps {Value = "XXXXXXXXXXXXX"});
+                new CfnOutputProps {Value = sharedAccessWithResharePolicyTemplate.AttrPolicyTemplateId});
     }
 }

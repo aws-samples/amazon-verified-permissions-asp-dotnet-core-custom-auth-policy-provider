@@ -4,15 +4,12 @@ namespace TinyTodo.CDK.PolicyStore.PolicyTemplates;
 
 public class TodoListSharedAccessWithResharePolicyTemplate : CfnPolicyTemplateProps
 {
-    public TodoListSharedAccessWithResharePolicyTemplate(string policyStoreid)
+    public const string PolicyTemplateFilePath = @"PolicyStore/PolicyTemplates/TodoListSharedAccessWithResharePolicyTemplate.cedar";
+
+    public TodoListSharedAccessWithResharePolicyTemplate(string policyStoreId)
     {
-        PolicyStoreId = policyStoreid;
-        Description = "User can add items to the shared todo list"; 
-        Statement =  @"permit(
-                        principal in ?principal,
-                        action in [TinyTodoList::Action::""AddTodoItem"", 
-                                TinyTodoList::Action::""ShareTodoList""], 
-                        resource in ?resource
-                    );";
+        PolicyStoreId = policyStoreId;
+        Description = "User can add items to the shared todo list";
+        Statement = File.ReadAllText(PolicyTemplateFilePath);
     }
 }
