@@ -25,3 +25,4 @@ Thumbs.db
 # Misc
 *.bak
 /*/*.bak
+/TinyTodo.CDK/cdk-outputs.json
