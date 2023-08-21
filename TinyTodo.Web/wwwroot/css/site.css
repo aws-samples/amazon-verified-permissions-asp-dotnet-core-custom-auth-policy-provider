@@ -56,3 +56,8 @@ body {
     font-size: 1.5em;
     font-weight: bold;
 }
+
+.modal-dialog
+{
+  margin-top: 70px;
+}
