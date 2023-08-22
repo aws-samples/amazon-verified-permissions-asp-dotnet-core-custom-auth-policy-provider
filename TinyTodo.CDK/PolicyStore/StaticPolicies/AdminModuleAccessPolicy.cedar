@@ -1,6 +1,6 @@
 permit (
     principal,
     action in [TinyTodoList::Action::"UserAdmin"],
-    resource
+    resource == TinyTodoList::Application::"TinyTodoListApp"
 )
 when { principal.Role == "Administrator" };
