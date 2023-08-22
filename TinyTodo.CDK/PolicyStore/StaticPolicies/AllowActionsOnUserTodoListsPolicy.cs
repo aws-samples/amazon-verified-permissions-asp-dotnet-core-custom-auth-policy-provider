@@ -16,10 +16,10 @@ public class AllowActionsOnUserTodoListsPolicy : CfnPolicyProps
                 Description = "Allow all actions for users on their own todo lists", 
                 Statement =  @"permit(
                                 principal,
-                                action in [TinyTodoList::Action::""CreateTodoList"", 
-                                            TinyTodoList::Action::""AddTodoItem"", 
+                                action in [TinyTodoList::Action::""AddTodoItem"", 
                                             TinyTodoList::Action::""ShareTodoList"", 
-                                            TinyTodoList::Action::""DeleteTodoList""],
+                                            TinyTodoList::Action::""DeleteTodoList"",
+                                            TinyTodoList::Action::""MakeTodoListPrivate""],
                                 resource
                                 )
                             when {

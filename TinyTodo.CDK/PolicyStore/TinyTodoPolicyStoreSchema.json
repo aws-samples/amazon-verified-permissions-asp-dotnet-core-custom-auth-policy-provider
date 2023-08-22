@@ -11,17 +11,31 @@
                         "User"
                     ],
                     "resourceTypes": [
-                        "User"
+                        "Application"
                     ]
                 }
             },
-            "DeleteTodoList": {
+            "GetTodoLists": {
+                "appliesTo": {
+                    "context": {
+                        "type": "Record",
+                        "attributes": {}
+                    },
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "Application"
+                    ]
+                }
+            },
+            "CreateTodoList": {
                 "appliesTo": {
                     "principalTypes": [
                         "User"
                     ],
                     "resourceTypes": [
-                        "TodoList"
+                        "Application"
                     ]
                 }
             },
@@ -32,16 +46,6 @@
                     ],
                     "principalTypes": [
                         "User"
-                    ]
-                }
-            },
-            "CreateTodoList": {
-                "appliesTo": {
-                    "principalTypes": [
-                        "User"
-                    ],
-                    "resourceTypes": [
-                        "TodoList"
                     ]
                 }
             },
@@ -58,9 +62,45 @@
                         "TodoList"
                     ]
                 }
+            },
+            "MakeTodoListPrivate": {
+                "appliesTo": {
+                    "context": {
+                        "type": "Record",
+                        "attributes": {}
+                    },
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "TodoList"
+                    ]
+                }
+            },
+            "DeleteTodoList": {
+                "appliesTo": {
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "TodoList"
+                    ]
+                }
             }
         },
         "entityTypes": {
+            "Application": {
+                "memberOfTypes": [],
+                "shape": {
+                    "attributes": {
+                        "Id": {
+                            "required": true,
+                            "type": "String"
+                        }
+                    },
+                    "type": "Record"
+                }
+            },
             "User": {
                 "memberOfTypes": [],
                 "shape": {
