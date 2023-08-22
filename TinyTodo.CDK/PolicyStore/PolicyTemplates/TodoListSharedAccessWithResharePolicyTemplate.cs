@@ -9,7 +9,7 @@ public class TodoListSharedAccessWithResharePolicyTemplate : CfnPolicyTemplatePr
     public TodoListSharedAccessWithResharePolicyTemplate(string policyStoreId)
     {
         PolicyStoreId = policyStoreId;
-        Description = "User can add items to the shared todo list";
+        Description = "User can add items to and reshare the shared todo list";
         Statement = File.ReadAllText(PolicyTemplateFilePath);
     }
 }
