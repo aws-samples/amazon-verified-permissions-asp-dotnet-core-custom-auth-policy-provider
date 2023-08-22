@@ -37,13 +37,11 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
         if(policyName.StartsWith(Constants.PolicyPrefixes.HasPermissionOnAction))
         {
             var action = policyName.Replace(Constants.PolicyPrefixes.HasPermissionOnAction, "");
-            return new [] {new HasPermissionRequirement(action)};
-        }
-        if(policyName.StartsWith(Constants.PolicyPrefixes.HasPermissionOnResource))
-        {
-            var action = policyName.Replace(Constants.PolicyPrefixes.HasPermissionOnResource, "");
-            return new [] {new HasPermissionRequirement(action)};
-        }
+            var actionParts = action.Split("_");
+            return new [] {new HasPermissionRequirement(action: actionParts[0], 
+                                                    resourceType: actionParts[1], 
+                                                    resourceIdFormElementName: actionParts[2])};
+        }        
 
         throw new NotImplementedException("Unknown policy type");
     }

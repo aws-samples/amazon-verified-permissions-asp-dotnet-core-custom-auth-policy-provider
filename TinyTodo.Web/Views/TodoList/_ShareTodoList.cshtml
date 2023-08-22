@@ -11,7 +11,7 @@
         <form id="frmShareTodoList" method="post" action="/TodoList/Share">
             <div class="alert"></div>
             <p>Email: <input type="text" name="email"></p>
-            <p>Allow Reshare?: <input type="checkbox" name="allowReshare"></p>
+            <p>Allow Reshare?: <input type="checkbox" name="allowReshare" onchange="this.value=this.checked"></p>
         </form>        
       </div>
       <div class="modal-footer">

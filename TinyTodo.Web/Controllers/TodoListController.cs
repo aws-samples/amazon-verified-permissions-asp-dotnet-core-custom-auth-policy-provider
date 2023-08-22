@@ -28,6 +28,7 @@ public class TodoListController : Controller
         _verifiedPermissionsUtil = verifiedPermissionsUtil;
     }
 
+    [HasPermissionOnAction(Constants.Actions.GetTodoLists)]
     public async Task<IActionResult> Index()
     {
         var todoLists = new List<TodoList>();
@@ -51,6 +52,7 @@ public class TodoListController : Controller
     }
 
     [HttpPost]
+    [HasPermissionOnAction(Constants.Actions.CreateTodoList)]    
     public async Task<IActionResult> CreateAsync(TodoList todoList)
     {
         using (var db = new TinyTodoDBContext(_appConfig))
@@ -69,24 +71,14 @@ public class TodoListController : Controller
     }
 
     [HttpPost]
+    [HasPermissionOnAction(actionName: Constants.Actions.AddTodoItem,  
+                            resourceType: nameof(TodoList), 
+                            resourceIdFormElementName: nameof(TodoItem.TodoListId))]
     public async Task<IActionResult> AddTodoItem(TodoItem todoItem)
     {
         using (var db = new TinyTodoDBContext(_appConfig))
         {
             var todoList = db.TodoLists.FirstOrDefault(x => x.Id == todoItem.TodoListId);
-
-            if(todoList == null)
-            {
-                return new JsonResult(new { success = false, message = "Invalid to-do list" });
-            }
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, todoList, 
-                                        Constants.ResourcePolicies.AddTodoItem);
-
-            if(!authorizationResult.Succeeded)
-            {
-                return new JsonResult(new { success = false, message = "You don't have permissions to add items to this to-do list." });
-            }
 
             if(db.TodoItems.Any(x => x.TodoListId == todoItem.TodoListId 
                                             && x.Title == todoItem.Title))
@@ -101,25 +93,17 @@ public class TodoListController : Controller
     }
 
     [HttpPost]
+    [HasPermissionOnAction(actionName: Constants.Actions.ShareTodoList, 
+                resourceType: nameof(TodoList), 
+                resourceIdFormElementName: nameof(TodoListShare.TodoListId))]
     public async Task<IActionResult> ShareAsync(TodoListShare todoListShare)
     {
-        using (var db = new TinyTodoDBContext(_appConfig))
+        if(todoListShare.Email.Equals(User.Identity.Name, StringComparison.OrdinalIgnoreCase))
         {
-            var todoList = db.TodoLists.FirstOrDefault(x => x.Id == todoListShare.TodoListId);
-
-            if(todoList == null)
-            {
-                return new JsonResult(new { success = false, message = "Invalid to-do list" });
-            }
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, todoList, 
-                                        Constants.ResourcePolicies.ShareTodoList);
-
-            if(!authorizationResult.Succeeded)
-            {
-                return new JsonResult(new { success = false, message = "You don't have permissions to share the to-do list." });
-            }
-            
+            return new JsonResult(new { success = false, message = "Invalid email address" });
+        }
+        using (var db = new TinyTodoDBContext(_appConfig))
+        {                        
             if(db.TodoListShares.Any(x => x.Email == todoListShare.Email && x.TodoListId == todoListShare.TodoListId))
             {
                 return new JsonResult(new { success = false, message = "To-do list already shared with this email" });
@@ -130,7 +114,6 @@ public class TodoListController : Controller
             db.TodoListShares.Add(todoListShare);
             db.SaveChanges();
         }
-
 
         var policyTemplateId = todoListShare.AllowReshare ? _appConfig.TodoListSharedAccessWithResharePolicyTemplateId 
                                         : _appConfig.TodoListSharedAccessPolicyTemplateId;
@@ -144,6 +127,9 @@ public class TodoListController : Controller
     }    
 
     [HttpPost]
+    [HasPermissionOnAction(actionName: Constants.Actions.DeleteTodoList, 
+                resourceType: nameof(TodoList), 
+                resourceIdFormElementName: nameof(TodoList.Id))]
     public async Task<IActionResult> DeleteAsync(TodoList todoList)
     {
         using (var db = new TinyTodoDBContext(_appConfig))
@@ -152,19 +138,6 @@ public class TodoListController : Controller
                             .Include(t => t.TodoItems)
                             .Include(t => t.Shares)
                             .FirstOrDefaultAsync(x => x.Id == todoList.Id);
-                            
-            if(todoList == null)
-            {
-                return new JsonResult(new { success = false, message = "Invalid to-do list" });
-            }
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, todoList, 
-                                        Constants.ResourcePolicies.DeleteTodoList);
-            if(!authorizationResult.Succeeded)
-            {
-                return new JsonResult(new { success = false, message = "You don't have permissions to delete the to-do list." });
-            
-            }
 
             db.TodoLists.Remove(todoList);
             db.SaveChanges();
@@ -173,11 +146,14 @@ public class TodoListController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> MakePrivateAsync(TodoListShare todoListShare)
+    [HasPermissionOnAction(actionName: Constants.Actions.MakeTodoListPrivate, 
+            resourceType: nameof(TodoList), 
+            resourceIdFormElementName: nameof(TodoList.Id))]
+    public async Task<IActionResult> MakePrivateAsync(TodoList todoList)
     {
         using (var db = new TinyTodoDBContext(_appConfig))
         {
-            var shares = db.TodoListShares.Where(x => x.TodoListId == todoListShare.TodoListId);
+            var shares = db.TodoListShares.Where(x => x.TodoListId == todoList.Id);
             if(!shares.Any())
             {
                 return new JsonResult(new { success = false, message = "Invalid to-do list or email" });
@@ -188,12 +164,12 @@ public class TodoListController : Controller
         }
         
         await _verifiedPermissionsUtil.DeleteSharePoliciesAsync(_appConfig.TodoListSharedAccessPolicyTemplateId, 
-            new EntityIdentifier { EntityId = $"{todoListShare.TodoListId}",  
+            new EntityIdentifier { EntityId = $"{todoList.Id}",  
                 EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::{typeof(TodoList).Name}"}
         );
 
         await _verifiedPermissionsUtil.DeleteSharePoliciesAsync(_appConfig.TodoListSharedAccessWithResharePolicyTemplateId, 
-            new EntityIdentifier { EntityId = $"{todoListShare.TodoListId}",  
+            new EntityIdentifier { EntityId = $"{todoList.Id}",  
                 EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::{typeof(TodoList).Name}"}
         );
 

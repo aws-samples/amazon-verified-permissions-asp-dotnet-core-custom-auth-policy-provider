@@ -53,6 +53,19 @@ public class VerifiedPermissionsUtil : IVerifiedPermissionsUtil
         return entityItem;
     }
 
+    public EntityItem GetApplicationEntityItem()
+    {
+        return new EntityItem
+        {
+            Identifier = new EntityIdentifier
+            {
+                EntityType = $"{_appConfig.PolicyStoreSchemaNamespace}::Application",
+                EntityId = "TinyTodoListApp"
+            },
+            Attributes = new()
+        };
+    }
+
     public async Task<IsAuthorizedResponse> IsAuthorizedAsync(ClaimsPrincipal user, string action, IEntity? entity)
     {
         var principal = ToEntityItem(user);
@@ -68,12 +81,10 @@ public class VerifiedPermissionsUtil : IVerifiedPermissionsUtil
             }
         };
 
-        if (entity != null)
-        {
-            var resource = ToEntityItem(entity);
-            authorizationRequest.Resource = resource.Identifier;
-            authorizationRequest.Entities.EntityList.Add(resource);
-        }
+        var resource =  entity != null ? ToEntityItem(entity) : GetApplicationEntityItem();
+        
+        authorizationRequest.Resource = resource.Identifier;
+        authorizationRequest.Entities.EntityList.Add(resource);
 
         var isAuthorizedResponse = await _verifiedPermissionsClient.IsAuthorizedAsync(authorizationRequest);
         return isAuthorizedResponse;
