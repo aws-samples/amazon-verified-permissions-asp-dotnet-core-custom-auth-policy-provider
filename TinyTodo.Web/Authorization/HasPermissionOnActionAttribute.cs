@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 
 public class HasPermissionOnActionAttribute : AuthorizeAttribute
 {
-    public HasPermissionOnActionAttribute(string actionName)
+    public HasPermissionOnActionAttribute(string actionName, string resourceType = "", string resourceIdFormElementName = "")
     {
-        Policy = $"{Constants.PolicyPrefixes.HasPermissionOnAction}{actionName}";
+        Policy = $"{Constants.PolicyPrefixes.HasPermissionOnAction}{actionName}_{resourceType}_{resourceIdFormElementName}";
     }
 }
 

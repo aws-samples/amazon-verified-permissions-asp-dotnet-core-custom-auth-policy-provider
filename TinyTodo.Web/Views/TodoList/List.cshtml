@@ -94,12 +94,17 @@
                     msg.addClass('alert-danger');
                 }
                 msg.html(result.message);
+            }).fail(function(res){
+                if(res.status === 403){
+                    msg.addClass('alert-danger');
+                    msg.html("You don't have permissions to share the to-do list.");
+                }
             });
         });
 
         $('.btn-mark-list-private').click(function(event){
             if(confirm('Are you sure you want to mark this todo list as private?')){
-                let data = 'todoListId='+$(this).data('todo-list-id');
+                let data = 'id='+$(this).data('todo-list-id');
                 jQuery.post('/TodoList/MakePrivate', data, function(result){
                     if(result.success){
                         alert(result.message);
@@ -108,6 +113,11 @@
                         alert(result.message);
                     }
                     msg.html(result.message);
+                }).fail(function(res){
+                    if(res.status === 403){
+                        msg.addClass('alert-danger');
+                        msg.html("You don't have permissions on the to-do list.");
+                    }
                 });
             }
         });
@@ -125,6 +135,12 @@
                     msg.addClass('alert-danger');
                 }
                 msg.html(result.message);
+            })
+            .fail(function(res){
+                if(res.status === 403){
+                    msg.addClass('alert-danger');
+                    msg.html("You don't have permissions on the to-do list.");
+                }
             });
         });
 
@@ -137,6 +153,11 @@
                     location.reload();
                 }else{
                     alert(result.message);
+                }
+            })
+            .fail(function(res){
+                if(res.status === 403){
+                    alert("You don't have permissions on the to-do list.");
                 }
             });
           }

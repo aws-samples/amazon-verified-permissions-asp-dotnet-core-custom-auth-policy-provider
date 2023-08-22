@@ -17,6 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var appConfig = new AppConfig(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IAppConfig>(appConfig);
 builder.Services.AddTransient<IAmazonVerifiedPermissions, AmazonVerifiedPermissionsClient>();
 builder.Services.AddTransient<IVerifiedPermissionsUtil, VerifiedPermissionsUtil>();
