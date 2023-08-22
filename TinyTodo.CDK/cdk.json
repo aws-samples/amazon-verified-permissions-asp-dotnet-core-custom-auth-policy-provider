@@ -49,6 +49,7 @@
       "@aws-cdk/aws-apigateway:requestValidatorUniqueId": true,
       "@aws-cdk/aws-kms:aliasNameRef": true,
       "@aws-cdk/core:includePrefixInUniqueNameGeneration": true
-    }
+    },
+    "outputsFile": "cdk-outputs.json"
   }
   

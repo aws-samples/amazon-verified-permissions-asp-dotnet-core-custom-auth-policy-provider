@@ -6,25 +6,16 @@ namespace TinyTodo.CDK.PolicyStore.StaticPolicies;
 
 public class AllowActionsOnUserTodoListsPolicy : CfnPolicyProps
 {
-    public AllowActionsOnUserTodoListsPolicy(string policyStoreid)
+    public const string PolicyFilePath = @"PolicyStore/StaticPolicies/AllowActionsOnUserTodoListsPolicy.cedar";
+    public AllowActionsOnUserTodoListsPolicy(string policyStoreId)
     {
-        PolicyStoreId = policyStoreid;
+        PolicyStoreId = policyStoreId;
         Definition =  new PolicyDefinitionProperty 
         {
             Static = new StaticPolicyDefinitionProperty
             {
                 Description = "Allow all actions for users on their own todo lists", 
-                Statement =  @"permit(
-                                principal,
-                                action in [TinyTodoList::Action::""AddTodoItem"", 
-                                            TinyTodoList::Action::""ShareTodoList"", 
-                                            TinyTodoList::Action::""DeleteTodoList"",
-                                            TinyTodoList::Action::""MakeTodoListPrivate""],
-                                resource
-                                )
-                            when {
-                                resource.Owner == principal.Email  
-                            };"
+                Statement = File.ReadAllText(PolicyFilePath)
             }
         };
     }

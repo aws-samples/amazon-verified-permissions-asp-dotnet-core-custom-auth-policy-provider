@@ -1,0 +1,9 @@
+{
+  "[cedar]": {
+    "editor.tabSize": 4,
+    "editor.wordWrapColumn": 80,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "cedar-policy.vscode-cedar",
+  },
+  "cedar.schemaFile": "TinyTodo.CDK/PolicyStore/TinyTodoList.cedarschema.json"
+}

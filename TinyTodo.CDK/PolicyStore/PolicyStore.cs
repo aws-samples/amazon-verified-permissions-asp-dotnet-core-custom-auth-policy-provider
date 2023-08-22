@@ -6,7 +6,7 @@ public static class PolicyStoreDetails
 {
     public const string Name = "TinyTodoPolicyStore";
     
-    public const string SchemaJsonFilePath = @"PolicyStore\TinyTodoPolicyStoreSchema.json";
+    public const string SchemaJsonFilePath = @"PolicyStore/TinyTodoList.cedarschema.json";
 
     public static string SchemaJson
     {

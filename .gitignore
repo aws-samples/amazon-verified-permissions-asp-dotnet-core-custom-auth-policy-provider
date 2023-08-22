@@ -14,6 +14,8 @@
 .vscode/*
 !.vscode/tasks.json
 !.vscode/launch.json
+!.vscode/settings.json
+!.vscode/extensions.json
 .history/*
 
 # System files
@@ -23,3 +25,4 @@ Thumbs.db
 # Misc
 *.bak
 /*/*.bak
+/TinyTodo.CDK/cdk-outputs.json

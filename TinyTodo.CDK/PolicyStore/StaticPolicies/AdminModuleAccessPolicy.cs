@@ -6,22 +6,17 @@ namespace TinyTodo.CDK.PolicyStore.StaticPolicies;
 
 public class AdminModuleAccessPolicy : CfnPolicyProps
 {
-    public AdminModuleAccessPolicy(string policyStoreid)
+    public const string PolicyFilePath = @"PolicyStore/StaticPolicies/AdminModuleAccessPolicy.cedar";
+
+    public AdminModuleAccessPolicy(string policyStoreId)
     {
-        PolicyStoreId = policyStoreid;
+        PolicyStoreId = policyStoreId;
         Definition = new PolicyDefinitionProperty
         {
             Static = new StaticPolicyDefinitionProperty 
             {
                 Description = "Users with Administrator role can access UserAdmin module", 
-                Statement =  @"permit(
-                                principal,
-                                action in [TinyTodoList::Action::""UserAdmin""],
-                                resource == TinyTodoList::Application::""TinyTodoListApp""
-                            ) 
-                            when {
-                                principal.Role == ""Administrator""
-                            };"
+                Statement = File.ReadAllText(PolicyFilePath)
             }
         };
     }
