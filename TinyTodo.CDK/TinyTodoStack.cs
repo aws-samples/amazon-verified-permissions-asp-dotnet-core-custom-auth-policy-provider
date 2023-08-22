@@ -28,6 +28,10 @@ public class TinyTodoCdkStack : Stack
 
         var policyStoreId = tinyTodoPolicyStore.AttrPolicyStoreId;
 
+        var allowActionsOnApplicationPolicy 
+                = new CfnPolicy(this, nameof(AllowActionsOnApplicationPolicy), 
+                        new AllowActionsOnApplicationPolicy(policyStoreId));
+
         var allowActionsOnUserTodoLists 
                 = new CfnPolicy(this, nameof(AllowActionsOnUserTodoListsPolicy), 
                         new AllowActionsOnUserTodoListsPolicy(policyStoreId));
